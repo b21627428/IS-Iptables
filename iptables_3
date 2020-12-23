@@ -1,0 +1,33 @@
+
+#RULE DELETING AND SETTING DEFAULT POLICY
+iptables -F
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+#E-Mail Server
+iptables -A OUTPUT -o eth0 -s 192.168.1.3 -p 6 --sport 25 -j ACCEPT
+iptables -A INPUT  -i eth0 -d 192.168.1.3 -p 6 --dport 25 -j ACCEPT
+
+#Web Server
+iptables -A OUTPUT -o eth0 -s 192.168.1.2 -p 6 -m multiport --source-port 80,443 -j ACCEPT
+iptables -A INPUT  -i eth0 -d 192.168.1.2 -p 6 -m multiport --destination-port 80,443 -j ACCEPT
+
+#Firewall
+iptables -A FORWARD -o eth0 -d 192.168.1.2 -p 6 -m multiport --destination-port 80,443 -j ACCEPT
+iptables -A FORWARD -o eth0 -d 192.168.1.3 -p 6 --sport 25 --dport 25 -j ACCEPT
+iptables -A FORWARD -i eth0 -s 192.168.1.2 -p 6 -m multipport --source-port 80,443 -j ACCEPT
+iptables -A FORWARD -i eth0 -s 192.168.1.3 -p 6 --sport 25 --dport 25 -j ACCEPT
+
+
+#All Computers in Lan 1 
+iptables -A OUTPUT  -o eth1 -s 192.168.5.0/24 -p 6 -m multiport --source-port 80,443,25 -j ACCEPT
+iptables -A INPUT   -i eth1 -d 192.168.5.0/24  -p 6 -m multiport --destination-port 80,443,25 -j ACCEPT
+
+#All Computers in Lan 2
+iptables -A OUTPUT  -o eth2 -s 192.168.10.0/24 -p 6 -m multiport --source-port 80,443,25 -j ACCEPT
+iptables -A INPUT   -i eth2 -d 192.168.10.0/24  -p tcp -m multiport --destination-port 80,443,25 -j ACCEPT
+
+#All Computers in Lan 3
+iptables -A OUTPUT  -o eth3 -s 192.168.25.0/24 -p 6 -m multiport --source-port 80,443,25 -j ACCEPT
+iptables -A INPUT   -i eth3 -d 192.168.25.0/24  -p tcp -m multiport --destination-port 80,443,25 -j ACCEPT

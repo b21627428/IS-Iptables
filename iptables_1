@@ -1,0 +1,20 @@
+
+#RULE DELETING AND SETTING DEFAULT POLICY
+iptables -F
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+#Firewall
+iptables -A FORWARD -i eth1 -o eth2 -s 192.168.5.0/24 -d 192.168.10.0/24 -p 0 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -s 192.168.10.0/24 -d 192.168.5.0/24 -p 0 -j ACCEPT
+
+#All Computers in Lan 1
+iptables -A OUTPUT  -o eth1 -s 192.168.5.0/24 -p 0 -j ACCEPT
+iptables -A INPUT   -i eth1 -d 192.168.5.0/24 -p 0 -j ACCEPT
+
+#All Computers in Lan 2
+iptables -A OUTPUT  -o eth2 -s 192.168.10.0/24 -p 0 -j ACCEPT
+iptables -A INPUT   -i eth2 -d 192.168.10.0/24 -p 0 -j ACCEPT
+
+

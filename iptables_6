@@ -1,0 +1,10 @@
+
+
+
+#Firewall
+iptables -A FORWARD -o eth0 -d 192.168.1.2 -p 6 --syn -m multiport --destination-port 80,443 -m connlimit --connlimit-above 100 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+
+
+
+
+
